@@ -24,6 +24,7 @@ const NavBar = ({username}) => {
                     if(!confirm('Are you sure you want to logout?')){
 
                         event.preventDefault();
+                        localStorage.removeItem(key);
                     }
                 }}
                 >
