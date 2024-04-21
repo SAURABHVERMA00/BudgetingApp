@@ -1,17 +1,21 @@
 import React from "react";
-import { createExpense, createbudget, fetchData, waait } from "../helpers";
-import { useLoaderData } from "react-router-dom";
+import { createExpense, createbudget, deleteItem, fetchData, waait } from "../helpers";
+import { Link, useLoaderData } from "react-router-dom";
 import Intro from "../Components/Intro";
 import { toast } from "react-toastify";
 import AddBudgetForm from "../Components/AddBudgetForm";
 import AddExpenseForm from "../Components/AddExpenseForm";
+import BudgetItem from "../Components/BudgetItem";
+import Table from "../Components/Table";
 
 
 // loader
 export function dashboardLoader() {
   const username = fetchData("username");
   const budgets = fetchData("budgets");
-  return { username, budgets };
+  const expenses = fetchData("expenses");
+
+  return { username, budgets ,expenses};
 }
 
 // action
@@ -59,12 +63,29 @@ export async function dashboardAction({ request }) {
     }
   }
 
+
+  if(_action==="deleteExpense"){
+    try{
+      // create expense ka helper function
+      deleteItem({
+        key:"expenses",
+        id:values.expenseId
+      });
+      return toast.success("Expense deleted !");
+    }catch(e){
+      throw new Error("There was a problem deleting your expense");
+    }
+  }
+
+
+
+
 }
 
 
 
 const DashBoard = () => {
-  const { username, budgets } = useLoaderData();
+  const { username, budgets ,expenses} = useLoaderData();
 
   return (
     <div className="">
@@ -82,6 +103,35 @@ const DashBoard = () => {
                 <AddBudgetForm />
                 <AddExpenseForm budgets={budgets}/>
               </div>
+              <h2>Existing Budgets</h2>
+              <div className="budgets">
+                {
+                  budgets.map((budget)=>{
+                    return (
+                      <BudgetItem key={budget.id} budget={budget}/> 
+                    )
+                  })
+                }
+              </div>
+                {
+                  expenses && expenses.length>0 && (
+                    <div className="grid-sm">
+                      <h2>Recent Expenses </h2>
+                      <Table expenses={
+                        expenses
+                        .sort((a,b)=>b.createdAt-a.createdAt)
+                        .slice(0,8)
+                      }/>
+                      {
+                        expenses.length>8 &&(
+                          <Link to='expenses' className="btn btn--dark text-white">View all expenses</Link>
+                        )
+                      }
+                    </div>
+                  )
+                } 
+
+
             </div>
             ):(
               <div className="grid-sm">

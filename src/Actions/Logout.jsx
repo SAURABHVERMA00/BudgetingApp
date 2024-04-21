@@ -1,9 +1,12 @@
 import { redirect } from "react-router-dom";
-import { deleteUser } from "../helpers";
+import { deleteItem } from "../helpers";
 import {toast} from 'react-toastify';
 export async function logOutAction() {
     //delete user 
-    deleteUser({key:'username'});
+    deleteItem({key:'username'});
+    // deleteItem({key:'budgets'});
+    // deleteItem({key:'expenses'});
+
 
     toast.success('Logged out successfully');
     // redirect 
