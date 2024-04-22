@@ -4,8 +4,8 @@ import {toast} from 'react-toastify';
 export async function logOutAction() {
     //delete user 
     deleteItem({key:'username'});
-    // deleteItem({key:'budgets'});
-    // deleteItem({key:'expenses'});
+    deleteItem({key:'budgets'});
+    deleteItem({key:'expenses'});
 
 
     toast.success('Logged out successfully');
